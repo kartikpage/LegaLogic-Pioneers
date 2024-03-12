@@ -2,58 +2,54 @@
 
 echo "For complete installation enter your password:"
 
-# For updating system packages
+# Update system packages
 sudo apt-get update -y
 
-# Install git if not already installed
-if command -v git >/dev/null 2>&1; then
-    echo "Git is installed, proceeding towards next installation."
-else
-    echo "Git is not installed, installing now..."
-    sudo apt-get install git -y
+# Install git if needed
+if ! command -v git &>/dev/null; then
+  echo "Git is not installed, installing now..."
+  sudo apt-get install git -y
 fi
 
-mkdir LegaLogics
-# For cloning the Volatility repository
+# Create a directory for Forensics tools (more organized)
+mkdir ForensicsTools
+cd ForensicsTools
+
+# Clone Volatility repository
 git clone https://github.com/volatilityfoundation/volatility.git
 
-# To move into the volatality directory
+# Navigate to Volatility directory
 cd volatility
 
-# Granting executable permission to vol.py
-chmod a+x vol.py
+# Grant executable permission to vol.py
+chmod +x vol.py
 
-#For moving vol.py in command line directly without accessing the folder
-sudo ln -s $(pwd)/vol.py /usr/bin/vol.py
-export PATH=$PATH:/usr/bin
+# Create a symbolic link to vol.py in /usr/local/bin (preferred for custom scripts)
+sudo ln -s $(pwd)/vol.py /usr/local/bin/vol.py
 
-echo "For running vol.py you have to use python2"
+# Ask about Python 2 installation
+echo "For running vol.py you have to use Python 2."
 echo "Do you want to install Python 2? Enter (y/n):"
 read answer
 
-# Check the user's answer
-if [ "$answer" = "y" ]; then
-    # If the user answered 'yes', install Python 2
-    echo "Installing Python 2..."
-    sudo apt-get install python2
-    echo "Python 2 installation complete."
-elif [ "$answer" = "n" ]; then
-    # If the user answered 'no', do not install Python 2
-    echo "You chose not to install Python 2."
+# Check the user's answer and install Python 2 if needed
+if [[ "$answer" = "y" ]]; then
+  echo "Installing Python 2..."
+  sudo apt-get install python2
+  echo "Python 2 installation complete."
 else
-    # If the user entered something other than 'yes' or 'no', print an error message
-    echo "Invalid input. Please enter yes or no."
+  echo "You chose not to install Python 2."
 fi
 
+# Clone vt-cli repository
 cd ../
-# Clone the vt-cli repository from GitHub
 git clone https://github.com/VirusTotal/vt-cli.git
-# Navigate to the cloned repository
+
+# Build and install vt-cli
 cd vt-cli
-# Build the project
 go build
 make install
-# Print a success message
+
 echo "vt-cli has been successfully installed."
 
-
+# No need to export PATH here, as /usr/local/bin is already in PATH
