@@ -1,4 +1,3 @@
-bash
 #!/bin/bash
 
 # Function to install NFS packages
@@ -6,7 +5,13 @@ install_nfs_packages() {
     echo "Installing NFS packages..."
     sudo apt-get install ufw
     sudo apt-get install nfs-kernel-server nfs-common -y
-    echo "NFS packages installed."
+    
+    # Check if installation was successful
+    if [ $? -eq 0 ]; then
+        echo "NFS packages installed."
+    else
+        echo "NFS packages not installed."
+    fi
 }
 
 # Function to configure NFS exports
@@ -20,7 +25,13 @@ configure_nfs_exports() {
     
     # Apply changes
     sudo exportfs -ra
-    echo "NFS exports configured."
+    
+    # Check if configuration was successful
+    if [ $? -eq 0 ]; then
+        echo "NFS exports configured."
+    else
+        echo "NFS exports not configured."
+    fi
 }
 
 # Function to start NFS service
@@ -28,59 +39,76 @@ start_nfs_service() {
     echo "Starting NFS service..."
     sudo systemctl start nfs-server
     sudo systemctl enable nfs-server
-    echo "NFS service started."
+    
+    # Check if service started successfully
+    if [ $? -eq 0 ]; then
+        echo "NFS service started."
+    else
+        echo "NFS service not started."
+    fi
 }
 
 # Function to stop NFS service
 stop_nfs_service() {
     echo "Stopping NFS service..."
     sudo systemctl stop nfs-server
-    echo "NFS service stopped."
+    
+    # Check if service stopped successfully
+    if [ $? -eq 0 ]; then
+        echo "NFS service stopped."
+    else
+        echo "NFS service not stopped."
+    fi
 }
 
 # Function to add firewall rules for NFS
 configure_firewall() {
     echo "Configuring firewall for NFS..."
-    sudo ufw allow from 192.168.160.136/24 to any port nfs
+    sudo ufw allow from 192.168.1.0/24 to any port nfs
     sudo ufw reload
-    echo "Firewall configured for NFS."
+    
+    # Check if firewall configured successfully
+    if [ $? -eq 0 ]; then
+        echo "Firewall configured for NFS."
+    else
+        echo "Firewall not configured for NFS."
+    fi
 }
 
 # Main menu
-echo "Welcome to NFS management script"
-echo "1. Install NFS packages"
-echo "2. Configure NFS exports"
-echo "3. Start NFS service"
-echo "4. Stop NFS service"
-echo "5. Configure firewall for NFS"
-echo "6. Exit"
+while true; do
+    echo "Welcome to NFS management script"
+    echo "1. Install NFS packages"
+    echo "2. Configure NFS exports"
+    echo "3. Start NFS service"
+    echo "4. Stop NFS service"
+    echo "5. Configure firewall for NFS"
+    echo "6. Exit"
 
-read -p "Enter your choice: " choice
+    read -p "Enter your choice: " choice
 
-case $choice in
-    1)
-        install_nfs_packages
-        ;;
-    2)
-        configure_nfs_exports
-        ;;
-    3)
-        start_nfs_service
-        ;;
-    4)
-        stop_nfs_service
-        ;;
-    5)
-        configure_firewall
-        ;;
-    6)
-        echo "Exiting script."
-        exit 0
-        ;;
-    *)
-        echo "Invalid choice. Exiting."
-        exit 1
-        ;;
-esac
-
-exit 0
+    case $choice in
+        1)
+            install_nfs_packages
+            ;;
+        2)
+            configure_nfs_exports
+            ;;
+        3)
+            start_nfs_service
+            ;;
+        4)
+            stop_nfs_service
+            ;;
+        5)
+            configure_firewall
+            ;;
+        6)
+            echo "Exiting script."
+            exit 0
+            ;;
+        *)
+            echo "Invalid choice. Please enter a valid option."
+            ;;
+    esac
+done
