@@ -41,7 +41,7 @@ stop_nfs_service() {
 # Function to add firewall rules for NFS
 configure_firewall() {
     echo "Configuring firewall for NFS..."
-    sudo ufw allow from 192.168.1.0/24 to any port nfs
+    sudo ufw allow from 192.168.160.136/24 to any port nfs
     sudo ufw reload
     echo "Firewall configured for NFS."
 }
