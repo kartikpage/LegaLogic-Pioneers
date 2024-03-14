@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Function to check if a user has cron jobs
+check_cron_jobs() {
+    user=$1
+    cron_jobs=$(crontab -l -u $user 2>/dev/null)
+    if [ -n "$cron_jobs" ]; then
+        echo "Cron jobs found for user: $user"
+        echo "$cron_jobs"
+    else
+        echo "No cron jobs found for user: $user"
+    fi
+}
+
+# Main function to search for cron jobs
+main() {
+    echo "Searching for cron jobs..."
+    users=$(cut -d: -f1 /etc/passwd)
+    for user in $users; do
+        check_cron_jobs $user
+    done
+}
+
+# Execute main function
+main
