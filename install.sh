@@ -43,6 +43,8 @@ fi
 
 # Clone vt-cli repository
 cd ../
+mkdir Scanfile
+cd Scanfile
 git clone https://github.com/VirusTotal/vt-cli.git
 
 # Build and install vt-cli
